@@ -27,7 +27,8 @@ export class AuthService {
   signUp(email: string, password: string) {
     return this.http
       .post<AuthResponseData>(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAPIKey,
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' +
+          environment.firebaseAPIKey,
         { email: email, password: password, returnSecureToken: true }
       )
       .pipe(
@@ -46,7 +47,8 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http
       .post<AuthResponseData>(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + environment.firebaseAPIKey,
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' +
+          environment.firebaseAPIKey,
         { email: email, password: password, returnSecureToken: true }
       )
       .pipe(
@@ -72,7 +74,7 @@ export class AuthService {
     const user = new User(email, userId, token, expirationDate);
     this.user.next(user);
     this.autoLogout(expiresIn * 1000);
-    localStorage.setItem('userData',JSON.stringify(user));
+    localStorage.setItem('userData', JSON.stringify(user));
   }
 
   private handleError(errorRes: HttpErrorResponse) {
@@ -107,23 +109,31 @@ export class AuthService {
   autoLogout(expirationDuration: number) {
     this.tokenExpirationTimer = setTimeout(() => {
       this.logout();
-    },expirationDuration);
+    }, expirationDuration);
   }
 
   autoLogin() {
-   const userData: {email: string, id: string, _token: string, _tokenExpDate: string} = JSON.parse(localStorage.getItem('userData'));
-   if (!userData) {
-     return;
-   }
-   const loadedUser = new User(userData.email, userData.id, userData._token, new Date(userData._tokenExpDate));
+    const userData: {
+      email: string;
+      id: string;
+      _token: string;
+      _tokenExpDate: string;
+    } = JSON.parse(localStorage.getItem('userData'));
+    if (!userData) {
+      return;
+    }
+    const loadedUser = new User(
+      userData.email,
+      userData.id,
+      userData._token,
+      new Date(userData._tokenExpDate)
+    );
 
-   if (loadedUser.token) {
-     this.user.next(loadedUser);
-     const expirationDuration = new Date(userData._tokenExpDate).getTime() - new Date().getTime()
-     this.autoLogout(expirationDuration);
-   }
-
+    if (loadedUser.token) {
+      this.user.next(loadedUser);
+      const expirationDuration =
+        new Date(userData._tokenExpDate).getTime() - new Date().getTime();
+      this.autoLogout(expirationDuration);
+    }
   }
-
-
 }

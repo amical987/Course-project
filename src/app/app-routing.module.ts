@@ -6,22 +6,22 @@ const appRoutes: Routes = [
   {
     path: 'recipes',
     loadChildren: () =>
-      import('./recipes/recipes.module').then((d) => d.RecipesModule),
+      import('./recipes/recipes.module').then(d => d.RecipesModule),
   },
   {
     path: 'shopping-list',
     loadChildren: () =>
-      import('./shopping-list/shopping-list.module').then((d) => d.ShoppingListModule),
+      import('./shopping-list/shopping-list.module').then(d => d.ShoppingListModule),
   },
   {
     path: 'auth',
     loadChildren: () =>
-      import('./auth/auth.module').then((d) => d.AuthModule),
+      import('./auth/auth.module').then(d => d.AuthModule),
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes, { preloadingStrategy: PreloadAllModules, initialNavigation: 'enabled' })],
+  imports: [RouterModule.forRoot(appRoutes, { preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

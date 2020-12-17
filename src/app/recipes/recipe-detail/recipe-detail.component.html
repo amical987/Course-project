@@ -1,7 +1,8 @@
-<div class="row">
+<div [@wildState]="wildState" (click)="onShrink()">
+  <div class="row">
     <div class="col-xs-12">
-        <img [src]="recipe.imagePath" 
-        alt="{{ recipe.name }}" 
+        <img [src]="recipe.imagePath"
+        alt="{{ recipe.name }}"
         class="img-responsive"
         style="max-height: 350px;">
     </div>
@@ -14,8 +15,8 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="btn-group" appDropdown>
-            <button 
-            type="button" 
+            <button
+            type="button"
             class="btn btn-primary dropdown-toggle">Manage Recipe<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 <li><a (click)="addToShoppingList()" style="cursor: pointer;">To Shopping List</a></li>
@@ -39,3 +40,5 @@
         </ul>
     </div>
 </div>
+</div>
+

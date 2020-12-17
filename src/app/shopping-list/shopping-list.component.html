@@ -3,7 +3,10 @@
         <app-shopping-edit></app-shopping-edit>
         <hr>
         <ul class="list-group">
-            <a class="list-group-item" 
+            <a [@list1]
+            (@list1.start)="animationStarted($event)"
+            (@list1.done)="animationEnded($event)"
+            class="list-group-item"
             style="cursor: pointer"
             *ngFor="let ingredient of ingredients; let i = index"
             (click)="onEditItem(i)">

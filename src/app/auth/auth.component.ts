@@ -1,4 +1,10 @@
-import { Component, ComponentFactoryResolver, OnDestroy, ViewChild } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -9,16 +15,83 @@ import { AuthResponseData, AuthService } from './auth.service';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
+  animations: [
+    trigger('divState', [
+      state('normal', style({
+        backgroundColor: 'red',
+        transform: 'translateX(0)'
+      })),
+      state('highlighted', style({
+        backgroundColor: 'blue',
+        transform: 'translateX(100px)'
+      })),
+      transition('normal <=> highlighted', animate(300))
+    ]),
+    trigger('wildState', [
+      state('normal', style({
+        backgroundColor: 'red',
+        transform: 'translateX(0) scale(1)'
+      })),
+      state('highlighted', style({
+        backgroundColor: 'blue',
+        transform: 'translateX(100px) scale(1)'
+      })),
+      state('shrunken', style({
+        backgroundColor: 'green',
+        transform: 'translateX(0) scale(0.5)'
+      })),
+      transition('normal => highlighted', animate(300)),
+      transition('highlighted => normal', animate(800)),
+      transition('shrunken <=> *', [
+        style({
+          backgroundColor: 'orange'
+        }),
+        animate(1000, style({
+          borderRadius: '50px'
+        })),
+        animate(500)
+      ])
+    ]),
+    trigger('list1', [
+      state('in', style({
+        opacity: 1,
+        transform: 'translateX(0)'
+      })),
+      transition('void => *', [
+        style({
+          opacity: 0,
+          transform: 'translateX(-100px)'
+        }),
+        animate(300)
+      ])
+    ])
+  ]
 })
 export class AuthComponent implements OnDestroy {
   isLoginMode = true;
   isLoading = false;
   error: string = null;
-  @ViewChild(PlaceholderDirective, { static: false}) alertHost: PlaceholderDirective;
+  @ViewChild(PlaceholderDirective, { static: false })
+  alertHost: PlaceholderDirective;
 
   private closeSub: Subscription;
+  state = 'normal';
+  wildState = 'normal';
 
-  constructor(private authService: AuthService, private router: Router,private cmpFactoryResolver: ComponentFactoryResolver) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cmpFactoryResolver: ComponentFactoryResolver
+  ) {}
+
+  onAnimate() {
+    this.state == 'normal' ? this.state = 'highlighted' : this.state = 'normal';
+    this.wildState == 'normal' ? this.wildState = 'highlighted' : this.wildState = 'normal';
+  }
+
+  onShrink() {
+    this.wildState = 'shrunken';
+  }
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
@@ -62,7 +135,9 @@ export class AuthComponent implements OnDestroy {
   }
 
   private showErrorAlert(message: string) {
-    const alertCmpFactory = this.cmpFactoryResolver.resolveComponentFactory(AlertComponent);
+    const alertCmpFactory = this.cmpFactoryResolver.resolveComponentFactory(
+      AlertComponent
+    );
 
     const hostViewContainerRef = this.alertHost.viewContainerRef;
     hostViewContainerRef.clear();
@@ -70,17 +145,15 @@ export class AuthComponent implements OnDestroy {
     const componentRef = hostViewContainerRef.createComponent(alertCmpFactory);
 
     componentRef.instance.message = message;
-    this.closeSub = componentRef.instance.close.subscribe( () => {
+    this.closeSub = componentRef.instance.close.subscribe(() => {
       this.closeSub.unsubscribe();
       hostViewContainerRef.clear();
     });
   }
 
   ngOnDestroy() {
-    if (this.closeSub){
+    if (this.closeSub) {
       this.closeSub.unsubscribe();
     }
   }
-
-
 }

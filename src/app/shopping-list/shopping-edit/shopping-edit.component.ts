@@ -8,7 +8,6 @@ import { Ingredient } from 'src/app/shared/ingredient.model';
 @Component({
   selector: 'app-shopping-edit',
   templateUrl: './shopping-edit.component.html',
-  styleUrls: ['./shopping-edit.component.css'],
   preserveWhitespaces: true
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
@@ -17,7 +16,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   editMode = false;
   editedItemIndex: number;
   editedItem: Ingredient;
-  
+
   constructor(private shoppingListService: ShoppingListService) { }
 
   ngOnInit(): void {
